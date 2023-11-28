@@ -126,11 +126,7 @@ begin
         else
             n_0 <= '0';
         end if;
-        if b(0) = '1' then
-            b_1 <= '1';
-        else
-            b_1 <= '0';
-        end if;
+        b_1 <= b(0);
         result <= acc;
     end process;
     
