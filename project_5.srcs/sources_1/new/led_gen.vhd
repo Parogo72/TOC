@@ -35,33 +35,41 @@ entity led_gen is
     Port ( state : in STD_LOGIC_VECTOR (1 downto 0);
            clk : in STD_LOGIC;
            rst : in STD_LOGIC;
+           led_en: in STD_LOGIC;
            leds : out STD_LOGIC_VECTOR (9 downto 0));
 end led_gen;
 
 architecture Behavioral of led_gen is
     signal int_state: STD_LOGIC_VECTOR(1 downto 0);
     signal leds_reg: STD_LOGIC_VECTOR(9 downto 0);
+    signal en_int: STD_LOGIC;
 begin
 
-    p_reg: process(clk, rst, int_state, state)
+    p_reg: process(clk, rst, int_state, state, en_int, led_en)
     begin
         if rst = '1' then
             leds_reg <= (others => '0');
             int_state <= "00";
+            en_int <= '0';
         elsif rising_edge(clk) then
             if int_state = state then 
-               case state is
-                when "00" => 
-                    leds_reg <= (others => '0');
-                when "01" => 
-                    leds_reg <= not leds_reg(0) & leds_reg(9 downto 1);
-                when "10" => 
-                    leds_reg <= not leds_reg;
-                when "11" => 
-                    leds_reg <= not leds_reg;
-                when others => 
-                    leds_reg <= (others => '0');
-               end case;
+                if en_int = led_en and en_int = '1' then
+                   case state is
+                    when "00" => 
+                        leds_reg <= (others => '0');
+                    when "01" => 
+                        leds_reg <= not leds_reg(0) & leds_reg(9 downto 1);
+                    when "10" => 
+                        leds_reg <= not leds_reg;
+                    when "11" => 
+                        leds_reg <= not leds_reg;
+                    when others => 
+                        leds_reg <= (others => '0');
+                   end case;
+                   en_int <= '0';
+               else
+                   en_int <= led_en;
+               end if;
            else
              case state is
                 when "00" => 

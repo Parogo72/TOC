@@ -45,6 +45,7 @@ architecture Behavioral of Sistema is
     component led_gen is
         Port ( state : in STD_LOGIC_VECTOR (1 downto 0);
                clk : in STD_LOGIC;
+               led_en: in STD_LOGIC;
                rst : in STD_LOGIC;
                leds : out STD_LOGIC_VECTOR (9 downto 0));
     end component led_gen;
@@ -112,7 +113,8 @@ begin
     i_led_gen: led_gen
     port map (
         state => led_state,
-        clk => clk_1hz,
+        clk => clk,
+        led_en => clk_1hz,
         rst => rst,
         leds => leds
     );
@@ -127,7 +129,7 @@ begin
     i_datos: datos
     port map (
             rst => rst,
-            clk => clk_1hz,
+            clk => clk,
             bram_en => bram_en,
             count1_en => count1_en,
             count2_en => count2_en,
@@ -139,7 +141,7 @@ begin
     i_control: control
     port map (
             rst => rst,
-            clk => clk_1hz,
+            clk => clk,
             bram_en => bram_en,
             z => z,
             inicio => inicio_deb,
@@ -170,7 +172,7 @@ begin
     i_display: displays
     port map (
         rst => rst,
-        clk => clk_1hz,
+        clk => clk,
         digito_0 => val1,
         digito_1 => (others => '0'),
         digito_2 => val2,

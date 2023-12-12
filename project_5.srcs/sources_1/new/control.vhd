@@ -37,6 +37,7 @@ entity control is
            inicio : in STD_LOGIC;
            fin : in STD_LOGIC;
            z: in STD_LOGIC;
+           sec: in STD_LOGIC;
            bram_en: out STD_LOGIC;
            led_state: out STD_LOGIC_VECTOR(1 downto 0));
 end control;
@@ -45,6 +46,8 @@ architecture Behavioral of control is
     type state is (s0, s1, s2);
     
     signal curr_state, next_state: state;
+    signal seg_pas: integer range 9 downto 0;
+    signal sec_int: STD_LOGIC;
 begin
     p_reg_state: process(clk ,rst) 
     begin
@@ -54,7 +57,26 @@ begin
             curr_state <= next_state;
         end if;
     end process;
-    p_nextState: process(curr_state, inicio, fin)
+    
+    p_seg_pas: process(clk, rst, sec)
+    begin
+        if rst = '1' then
+            seg_pas <= 0;
+            sec_int <= '0';
+        elsif rising_edge(clk) then
+            if sec_int = sec and sec = '1' then
+                if seg_pas = 9 then
+                    seg_pas <= 0;
+                else seg_pas <= seg_pas + 1;
+                end if;
+                sec_int <= '0';
+            elsif sec = '0' then
+                sec_int <= '1';
+            end if;
+        end if;
+    end process;
+
+    p_nextState: process(curr_state, inicio, fin, seg_pas)
     begin
         case curr_state is
             when s0 => 
@@ -68,8 +90,8 @@ begin
                 else next_state <= s1;
                 end if;
             when s2 => 
-                if inicio = '1' then
-                    next_state <= s1;
+                if seg_pas = 9 then
+                    next_state <= s0;
                 else next_state <= s2;
                 end if;
             when others => 
