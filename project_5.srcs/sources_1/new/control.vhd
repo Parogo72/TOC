@@ -58,20 +58,20 @@ begin
         end if;
     end process;
     
-    p_seg_pas: process(clk, rst, sec)
+    p_seg_pas: process(clk, rst, sec, sec_int)
     begin
         if rst = '1' then
             seg_pas <= 0;
             sec_int <= '0';
         elsif rising_edge(clk) then
-            if sec_int = sec and sec = '1' then
+            if sec_int /= sec and sec = '1' then
                 if seg_pas = 9 then
                     seg_pas <= 0;
                 else seg_pas <= seg_pas + 1;
                 end if;
-                sec_int <= '0';
-            elsif sec = '0' then
                 sec_int <= '1';
+            else 
+                sec_int <= sec;
             end if;
         end if;
     end process;

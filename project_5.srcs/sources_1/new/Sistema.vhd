@@ -77,6 +77,7 @@ architecture Behavioral of Sistema is
            inicio : in STD_LOGIC;
            fin : in STD_LOGIC;
            z: in STD_LOGIC;
+           sec: in STD_LOGIC;
            bram_en: out STD_LOGIC;
            led_state: out STD_LOGIC_VECTOR(1 downto 0));
     end component control;
@@ -144,6 +145,7 @@ begin
             clk => clk,
             bram_en => bram_en,
             z => z,
+            sec => clk_1hz,
             inicio => inicio_deb,
             fin => fin_deb,
             led_state => led_state

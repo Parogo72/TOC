@@ -53,7 +53,7 @@ begin
             en_int <= '0';
         elsif rising_edge(clk) then
             if int_state = state then 
-                if en_int = led_en and en_int = '1' then
+                if en_int /= led_en and led_en = '1' then
                    case state is
                     when "00" => 
                         leds_reg <= (others => '0');
@@ -66,7 +66,7 @@ begin
                     when others => 
                         leds_reg <= (others => '0');
                    end case;
-                   en_int <= '0';
+                   en_int <= '1';
                else
                    en_int <= led_en;
                end if;
