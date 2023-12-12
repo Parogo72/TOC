@@ -35,21 +35,21 @@ entity led_gen is
     Port ( state : in STD_LOGIC_VECTOR (1 downto 0);
            clk : in STD_LOGIC;
            rst : in STD_LOGIC;
-           ini_state: in STD_LOGIC_VECTOR(9 downto 0);
            leds : out STD_LOGIC_VECTOR (9 downto 0));
 end led_gen;
 
 architecture Behavioral of led_gen is
+    signal int_state: STD_LOGIC_VECTOR(1 downto 0);
     signal leds_reg: STD_LOGIC_VECTOR(9 downto 0);
-    signal int_reset: std_logic;
 begin
-    p_reg: process(clk, rst)
+
+    p_reg: process(clk, rst, int_state, state)
     begin
         if rst = '1' then
             leds_reg <= (others => '0');
-            int_reset <= '1';
+            int_state <= "00";
         elsif rising_edge(clk) then
-            if int_reset = '0' then 
+            if int_state = state then 
                case state is
                 when "00" => 
                     leds_reg <= (others => '0');
@@ -75,7 +75,7 @@ begin
                 when others => 
                     leds_reg <= (others => '0');
             end case;
-            int_reset <= '0';
+            int_state <= state;
            end if;
        end if;
    end process;
